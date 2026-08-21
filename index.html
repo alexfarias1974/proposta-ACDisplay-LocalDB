@@ -4,36 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Propostas AC Display</title>
-  <!-- SEO & Meta Tags -->
-  <meta name="description" content="Plataforma comercial para elaboração de propostas inteligentes integradas com o Supabase.">
+  <meta name="description" content="Plataforma comercial para elaboração de propostas inteligentes.">
   <link rel="stylesheet" href="style.css">
-  <!-- Supabase CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <!-- SheetJS CDN (XLSX Reader) -->
-  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
-  <!-- Visual Error Logger -->
-  <script>
-    window.addEventListener('error', function(e) {
-      var errorDiv = document.getElementById('debug-error-banner');
-      if (!errorDiv) {
-        errorDiv = document.createElement('div');
-        errorDiv.id = 'debug-error-banner';
-        errorDiv.style.position = 'fixed';
-        errorDiv.style.top = '0';
-        errorDiv.style.left = '0';
-        errorDiv.style.width = '100%';
-        errorDiv.style.background = '#ff007f';
-        errorDiv.style.color = '#fff';
-        errorDiv.style.padding = '15px';
-        errorDiv.style.zIndex = '99999';
-        errorDiv.style.textAlign = 'center';
-        errorDiv.style.fontWeight = 'bold';
-        errorDiv.style.boxShadow = '0 4px 15px rgba(0,0,0,0.5)';
-        document.body.appendChild(errorDiv);
-      }
-      errorDiv.innerHTML = '⚠️ Erro de Script: ' + e.message + ' (' + e.filename.split('/').pop() + ':' + e.lineno + ')';
-    });
-  </script>
 </head>
 <body>
 
@@ -48,7 +20,7 @@
       <p id="auth-subtitle" class="subtitle">Insira suas credenciais para continuar</p>
     </div>
 
-    <form id="auth-form" autocomplete="off">
+    <form id="auth-form" autocomplete="off" style="margin-top: 30px;">
       <div class="form-group">
         <label for="auth-email">E-mail</label>
         <div class="input-wrapper">
@@ -68,19 +40,6 @@
       </button>
     </form>
 
-    <div class="divider">ou</div>
-
-    <button id="btn-google-login" class="btn-oauth">
-      <!-- Google Icon SVG -->
-      <svg viewBox="0 0 24 24">
-        <path fill="#EA4335" d="M12 5.04c1.65 0 3.2.57 4.43 1.69l3.3-3.3C17.74 1.58 15.03 1 12 1 7.37 1 3.4 3.65 1.5 7.5l3.85 2.99C6.27 7.02 8.9 5.04 12 5.04z"/>
-        <path fill="#4285F4" d="M23.49 12.27c0-.81-.07-1.59-.2-2.35H12v4.46h6.47c-.28 1.47-1.11 2.71-2.36 3.55l3.66 2.84c2.14-1.97 3.37-4.87 3.37-8.5z"/>
-        <path fill="#FBBC05" d="M5.35 14.81c-.25-.75-.39-1.55-.39-2.38s.14-1.63.39-2.38l-3.85-2.99C.53 8.78 0 10.33 0 12s.53 3.22 1.5 4.96l3.85-2.99z"/>
-        <path fill="#34A853" d="M12 23c3.24 0 5.97-1.07 7.96-2.91l-3.66-2.84c-1.1.74-2.51 1.18-4.3 1.18-3.1 0-5.73-1.98-6.65-4.96l-3.85 2.99C3.4 20.35 7.37 23 12 23z"/>
-      </svg>
-      Entrar com o Gmail
-    </button>
-
     <p class="auth-switch">
       <span id="auth-switch-text">Não tem uma conta?</span>
       <a href="#" id="auth-switch-link">Cadastre-se</a>
@@ -89,44 +48,48 @@
 
   <!-- 2. PAINEL PRINCIPAL (DASHBOARD) -->
   <section id="view-dashboard" class="glass-container glass-container-large hidden">
-    <header class="app-header" style="align-items: center;">
+    <header class="app-header">
       <img src="logo.png" alt="AC Display" style="height: 75px; object-fit: contain;">
       <div class="user-info">
-        <span id="display-user-email" class="user-email">usuario@exemplo.com</span>
+        <span id="display-user-email" class="user-email"></span>
         <button id="btn-logout" class="btn-logout">Sair</button>
       </div>
     </header>
 
-    <h1 style="text-align: left; margin-bottom: 8px;">Olá, Bem-vindo!</h1>
-    <p class="subtitle" style="text-align: left; margin-bottom: 40px;">Selecione uma das opções abaixo para iniciar:</p>
+    <h1>Olá, Bem-vindo!</h1>
+    <p class="subtitle" style="margin-bottom: 40px;">Selecione uma das opções abaixo para iniciar:</p>
 
     <div class="dashboard-grid">
-      <!-- Botão Grande 1: Cadastro de Produtos -->
       <div class="db-card" id="card-products">
-        <div class="db-icon">📦</div>
+        <div class="db-icon">
+          <svg viewBox="0 0 24 24"><path d="M21 16.5C21 16.88 20.79 17.21 20.47 17.38L12.57 21.57C12.21 21.76 11.79 21.76 11.43 21.57L3.53 17.38C3.21 17.21 3 16.88 3 16.5V7.5C3 7.12 3.21 6.79 3.53 6.62L11.43 2.43C11.79 2.24 12.21 2.24 12.57 2.43L20.47 6.62C20.79 6.79 21 7.12 21 7.5V16.5Z" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M3.27 6.96L12 11.59L20.73 6.96" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/><path d="M12 22.08V12" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        </div>
         <div class="db-title">Cadastro de Produtos</div>
         <div class="db-desc">Gerencie seus produtos, preços e importe planilhas rapidamente.</div>
       </div>
 
-      <!-- Botão Grande 2: Proposta -->
       <div class="db-card" id="card-proposals">
-        <div class="db-icon">📄</div>
-        <div class="db-title">Proposta</div>
+        <div class="db-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+        </div>
+        <div class="db-title">Nova Proposta</div>
         <div class="db-desc">Elabore e envie propostas customizadas para seus clientes.</div>
       </div>
 
-      <!-- Botão Grande 3: Configurações -->
       <div class="db-card" id="card-settings">
-        <div class="db-icon">⚙️</div>
-        <div class="db-title">Configurações</div>
-        <div class="db-desc">Configure integrações, dados da empresa e dados do Supabase.</div>
+        <div class="db-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </div>
+        <div class="db-title">Fatores de Conversão</div>
+        <div class="db-desc">Configure os fatores multiplicadores para cálculo automático.</div>
       </div>
 
-      <!-- Botão Grande 4: Histórico de Propostas -->
       <div class="db-card" id="card-history">
-        <div class="db-icon">📁</div>
+        <div class="db-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+        </div>
         <div class="db-title">Histórico de Propostas</div>
-        <div class="db-desc">Acesse, pesquise por cliente e re-baixe suas propostas emitidas.</div>
+        <div class="db-desc">Acesse, pesquise por cliente e baixe as propostas emitidas.</div>
       </div>
     </div>
   </section>
@@ -139,9 +102,8 @@
     </div>
 
     <div class="product-layout">
-      <!-- Formulário Manual -->
       <div>
-        <h2 style="font-size: 1.4rem; margin-bottom: 24px; font-weight: 700;">Novo Produto</h2>
+        <h2>Novo Produto</h2>
         <form id="product-form" autocomplete="off">
           <div class="form-group">
             <label for="prod-name">Produto (Nome)</label>
@@ -161,28 +123,28 @@
         </form>
       </div>
 
-      <!-- Upload Planilha (Arraste e Solte) -->
       <div>
-        <h2 style="font-size: 1.4rem; margin-bottom: 24px; font-weight: 700;">Importar via Planilha</h2>
+        <h2>Importar via Planilha</h2>
         <div id="dropzone" class="dropzone">
-          <div class="dropzone-icon">📥</div>
+          <div class="dropzone-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          </div>
           <div class="dropzone-text">Arraste e solte sua planilha aqui</div>
           <div class="dropzone-subtext">Suporta arquivos Excel (.xlsx, .xls) ou .csv</div>
-          <div class="divider" style="margin: 8px 0; width: 100%;">ou</div>
-          <button type="button" class="btn-secondary" id="btn-select-file" style="width: auto; padding: 10px 20px;">
+          <div class="divider" style="margin: 16px 0; width: 100%;">ou</div>
+          <button type="button" class="btn-secondary" id="btn-select-file">
             Selecionar Arquivo
           </button>
           <input type="file" id="file-input" class="hidden" accept=".xlsx, .xls, .csv">
         </div>
-        <div id="file-info-container" class="hidden"></div>
+        <div id="file-info-container" class="hidden" style="margin-top:16px;text-align:center;color:var(--cyan);"></div>
       </div>
     </div>
 
-    <!-- Tabela de Produtos Cadastrados (Prévia) -->
     <div style="margin-top: 40px;">
-      <h2 style="font-size: 1.4rem; font-weight: 700; margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
-        Produtos no Supabase
-        <button id="btn-refresh-products" class="btn-secondary" style="width: auto; padding: 6px 12px; font-size: 0.85rem;">Atualizar Lista</button>
+      <h2 style="display: flex; align-items: center; justify-content: space-between;">
+        Produtos Cadastrados
+        <button id="btn-refresh-products" class="btn-secondary" style="font-size: 0.85rem;">Atualizar Lista</button>
       </h2>
       <div class="table-container">
         <table>
@@ -193,9 +155,6 @@
             </tr>
           </thead>
           <tbody id="products-table-body">
-            <tr>
-              <td colspan="2" class="text-center" style="color: var(--text-secondary);">Faça login para ver a lista de produtos.</td>
-            </tr>
           </tbody>
         </table>
       </div>
@@ -204,17 +163,16 @@
 
   <!-- 4. TELA: PROPOSTA -->
   <section id="view-proposals" class="glass-container glass-container-large hidden">
-    <div class="nav-bar" style="align-items: center;">
+    <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
       <div style="display: flex; align-items: center; gap: 12px;">
         <img src="logo.png" alt="AC Display" style="height: 60px; object-fit: contain;">
-        <div class="page-title">Criar Proposta</div>
+        <div class="page-title" id="proposal-form-title">Criar Proposta</div>
       </div>
     </div>
     
     <form id="proposal-form" autocomplete="off" style="margin-top: 20px;">
-      <!-- Customer Information Section -->
-      <h2 style="font-size: 1.3rem; margin-bottom: 20px; font-weight: 700; color: var(--blue);">Dados do Cliente</h2>
+      <h2 style="color: var(--cyan);">Dados do Cliente</h2>
       <div class="product-layout" style="margin-bottom: 24px;">
         <div>
           <div class="form-group">
@@ -240,12 +198,11 @@
         </div>
       </div>
 
-      <!-- Simulation Settings (Leasing / Sale Toggles) -->
       <div class="product-layout" style="margin-top: 30px; margin-bottom: 20px;">
         <div>
-          <h2 style="font-size: 1.3rem; margin-bottom: 15px; font-weight: 700; color: var(--blue);">Fator de Locação</h2>
+          <h2 style="color: var(--cyan);">Fator de Locação</h2>
           <div style="display: flex; align-items: center; gap: 15px;">
-            <span class="switch-label" id="label-factor-ti" style="font-weight: 700; color: var(--blue);">Fator TI</span>
+            <span class="switch-label" id="label-factor-ti" style="color: var(--cyan);">Fator TI</span>
             <label class="switch">
               <input type="checkbox" id="switch-factor-type">
               <span class="slider"></span>
@@ -254,9 +211,9 @@
           </div>
         </div>
         <div>
-          <h2 style="font-size: 1.3rem; margin-bottom: 15px; font-weight: 700; color: var(--blue);">Opção de Venda Direta</h2>
+          <h2 style="color: var(--cyan);">Opção de Venda Direta</h2>
           <div style="display: flex; align-items: center; gap: 15px;">
-            <span class="switch-label" id="label-sale-switch" style="font-weight: 700; color: var(--blue);">Habilitar Venda</span>
+            <span class="switch-label" id="label-sale-switch">Habilitar Venda</span>
             <label class="switch">
               <input type="checkbox" id="switch-sale-enabled" checked>
               <span class="slider"></span>
@@ -265,10 +222,9 @@
         </div>
       </div>
 
-      <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 30px 0;">
+      <hr>
 
-      <!-- Product Selection Section -->
-      <h2 style="font-size: 1.3rem; margin-bottom: 20px; font-weight: 700; color: var(--blue);">Itens da Proposta</h2>
+      <h2 style="color: var(--cyan);">Itens da Proposta</h2>
       <div class="product-layout" style="margin-bottom: 20px; align-items: flex-end;">
         <div style="position: relative;">
           <div class="form-group" style="margin-bottom: 0;">
@@ -276,10 +232,8 @@
             <div class="input-wrapper">
               <input type="text" id="prop-product-search" placeholder="Digite para filtrar produtos...">
             </div>
-            <!-- Search Results Dropdown -->
             <div id="prop-product-results" class="search-results-dropdown hidden"></div>
           </div>
-          <!-- Hidden field to store selected product ID -->
           <input type="hidden" id="prop-selected-product-id">
         </div>
         <div style="display: flex; gap: 15px; align-items: flex-end;">
@@ -289,15 +243,14 @@
               <input type="number" id="prop-quantity" min="1" value="1">
             </div>
           </div>
-          <button type="button" id="btn-add-item" class="btn-primary" style="width: auto; padding: 14px 24px; white-space: nowrap;">
+          <button type="button" id="btn-add-item" class="btn-secondary" style="padding: 12px 24px;">
             Adicionar
           </button>
         </div>
       </div>
 
-      <!-- Added Items Table -->
       <div style="margin-top: 20px; margin-bottom: 30px;">
-        <div class="table-container" style="margin-top: 10px; max-height: 250px;">
+        <div class="table-container" style="max-height: 250px; overflow-y: auto;">
           <table>
             <thead>
               <tr>
@@ -307,21 +260,15 @@
               </tr>
             </thead>
             <tbody id="proposal-items-body">
-              <tr>
-                <td colspan="3" class="text-center" style="color: var(--text-secondary); padding: 20px;">
-                  Nenhum produto adicionado à proposta.
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
-      <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 30px 0;">
+      <hr>
 
-      <!-- Contract Duration Switches -->
-      <h2 style="font-size: 1.3rem; margin-bottom: 16px; font-weight: 700; color: var(--blue);">Prazos de Contrato (Opções de Simulação)</h2>
-      <p class="subtitle" style="text-align: left; margin-bottom: 24px;">Ative os prazos de locação que deverão constar na proposta comercial:</p>
+      <h2 style="color: var(--cyan);">Prazos de Contrato (Simulação)</h2>
+      <p class="subtitle" style="margin-bottom: 24px;">Ative os prazos de locação que deverão constar na proposta:</p>
       
       <div class="switches-grid">
         <div class="switch-card">
@@ -354,122 +301,86 @@
         </div>
       </div>
 
-      <!-- Simulation Live Results -->
-      <div id="simulation-results-section" class="hidden" style="margin-top: 40px; padding: 30px; background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-glass); border-radius: 20px; box-shadow: var(--shadow-glow);">
-        <h2 style="font-size: 1.4rem; margin-bottom: 8px; font-weight: 800; color: var(--blue); text-align: center;">Resumo dos Valores de Locação</h2>
-        <p class="subtitle" style="margin-bottom: 30px; text-align: center;">Valores mensais estimados para cada prazo</p>
-        
-        <div class="switches-grid" id="simulation-results-cards">
-          <!-- Dynamically populated monthly simulation cards will go here -->
-        </div>
+      <div id="simulation-results-section" class="hidden" style="margin-top: 40px; padding: 30px; background: rgba(0, 212, 255, 0.05); border: 1px solid var(--border-glass); border-radius: 16px;">
+        <h2 style="text-align: center; color: var(--cyan);">Resumo dos Valores de Locação</h2>
+        <p class="subtitle" style="text-align: center; margin-bottom: 30px;">Valores mensais estimados para cada prazo</p>
+        <div class="switches-grid" id="simulation-results-cards"></div>
       </div>
 
-      <button type="submit" class="btn-primary" style="margin-top: 40px; max-width: 300px; display: block; margin-left: auto; margin-right: auto;">
+      <button type="submit" class="btn-primary" style="margin-top: 40px; max-width: 300px; display: block; margin: 40px auto 0 auto;">
         Gerar Proposta Comercial
       </button>
     </form>
   </section>
 
-  <!-- 5. TELA: CONFIGURAÇÕES (CONFIG SUPABASE) -->
+  <!-- 5. TELA: CONFIGURAÇÕES -->
   <section id="view-settings" class="glass-container glass-container-large hidden">
     <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
-      <div class="page-title">Configurações do Supabase</div>
+      <div class="page-title">Fatores de Conversão</div>
     </div>
     
-    <div style="max-width: 500px; margin: 0 auto;">
-      <p class="subtitle" style="text-align: left; margin-bottom: 24px;">
-        Insira suas credenciais do projeto Supabase para conectar a plataforma ao seu banco de dados. As chaves são guardadas apenas localmente no seu navegador.
+    <div style="max-width: 600px; margin: 0 auto;">
+      <p class="subtitle" style="margin-bottom: 24px;">
+        Configure os fatores utilizados no cálculo automático das propostas.
       </p>
 
       <form id="settings-form" autocomplete="off">
-        <div class="form-group">
-          <label for="supabase-url">Supabase Project URL (Opcional)</label>
-          <div class="input-wrapper">
-            <input type="url" id="supabase-url" placeholder="Deixe em branco para usar o Modo Local">
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label for="supabase-anon-key">Supabase Anon Key (Opcional)</label>
-          <div class="input-wrapper">
-            <input type="password" id="supabase-anon-key" placeholder="Deixe em branco para usar o Modo Local">
-          </div>
-        </div>
-
-        <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 30px 0;">
-
-        <h3 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 700; color: var(--blue);">Fatores de Conversão - TI</h3>
+        <h3 style="margin-bottom: 20px; color: var(--cyan);">Fatores de Conversão - TI</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 20px;">
           <div class="form-group">
             <label for="factor-ti-12m">12 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-ti-12m" placeholder="0.0791" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-ti-12m" required></div>
           </div>
           <div class="form-group">
             <label for="factor-ti-24m">24 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-ti-24m" placeholder="0.0719" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-ti-24m" required></div>
           </div>
           <div class="form-group">
             <label for="factor-ti-36m">36 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-ti-36m" placeholder="0.0654" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-ti-36m" required></div>
           </div>
           <div class="form-group">
             <label for="factor-ti-48m">48 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-ti-48m" placeholder="0.0556" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-ti-48m" required></div>
           </div>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 30px 0;">
+        <hr>
 
-        <h3 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 700; color: var(--blue);">Fatores de Conversão - Impressão</h3>
+        <h3 style="margin-bottom: 20px; color: var(--cyan);">Fatores de Conversão - Impressão</h3>
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 30px;">
           <div class="form-group">
             <label for="factor-imp-12m">12 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-imp-12m" placeholder="0.0990" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-imp-12m" required></div>
           </div>
           <div class="form-group">
             <label for="factor-imp-24m">24 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-imp-24m" placeholder="0.0900" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-imp-24m" required></div>
           </div>
           <div class="form-group">
             <label for="factor-imp-36m">36 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-imp-36m" placeholder="0.0820" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-imp-36m" required></div>
           </div>
           <div class="form-group">
             <label for="factor-imp-48m">48 Meses</label>
-            <div class="input-wrapper">
-              <input type="number" step="0.0001" min="0" id="factor-imp-48m" placeholder="0.0740" required>
-            </div>
+            <div class="input-wrapper"><input type="number" step="0.0001" min="0" id="factor-imp-48m" required></div>
           </div>
         </div>
 
-        <hr style="border: 0; border-top: 1px solid var(--border-glass); margin: 30px 0;">
+        <hr>
 
-        <h3 style="font-size: 1.2rem; margin-bottom: 20px; font-weight: 700; color: var(--blue);">Fator de Venda</h3>
+        <h3 style="margin-bottom: 20px; color: var(--cyan);">Fator de Venda</h3>
         <div style="max-width: 250px; margin-bottom: 30px;">
           <div class="form-group">
             <label for="factor-sale">Fator Multiplicador</label>
             <div class="input-wrapper">
-              <input type="number" step="0.01" min="0" id="factor-sale" placeholder="2.04" required>
+              <input type="number" step="0.01" min="0" id="factor-sale" required>
             </div>
           </div>
         </div>
 
-        <button type="submit" class="btn-primary" style="margin-top: 10px;">
+        <button type="submit" class="btn-primary">
           Salvar Configurações
         </button>
       </form>
@@ -478,7 +389,7 @@
 
   <!-- 6. TELA: HISTÓRICO DE PROPOSTAS -->
   <section id="view-history" class="glass-container glass-container-large hidden">
-    <div class="nav-bar" style="align-items: center;">
+    <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
       <div style="display: flex; align-items: center; gap: 12px;">
         <img src="logo.png" alt="AC Display" style="height: 60px; object-fit: contain;">
@@ -486,7 +397,6 @@
       </div>
     </div>
 
-    <!-- Barra de Busca -->
     <div style="margin-top: 30px; margin-bottom: 24px;">
       <div class="form-group" style="margin-bottom: 0;">
         <label for="history-search">Buscar Cliente</label>
@@ -496,8 +406,7 @@
       </div>
     </div>
 
-    <!-- Tabela de Histórico -->
-    <div class="table-container" style="margin-top: 10px; max-height: 500px;">
+    <div class="table-container" style="margin-top: 10px; max-height: 500px; overflow-y: auto;">
       <table>
         <thead>
           <tr>
@@ -509,18 +418,13 @@
           </tr>
         </thead>
         <tbody id="history-table-body">
-          <tr>
-            <td colspan="5" class="text-center" style="color: var(--text-secondary); padding: 30px;">
-              Faça login para visualizar seu histórico de propostas.
-            </td>
-          </tr>
         </tbody>
       </table>
     </div>
   </section>
 
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js"></script>
-  <script src="app.js?v=3.0"></script>
+  <script src="app.js?v=4.0"></script>
 </body>
 </html>
