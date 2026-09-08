@@ -113,6 +113,30 @@ button {
 }
 .btn-secondary:hover { border-color: var(--cyan); color: var(--cyan); }
 
+.btn-settings {
+  background: transparent;
+  color: var(--text-secondary);
+  padding: 8px 12px;
+  border: 1px solid var(--border-glass);
+  border-radius: 12px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: var(--transition);
+}
+.btn-settings:hover {
+  color: var(--cyan);
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.1);
+}
+.btn-settings svg {
+  transition: transform 0.3s ease;
+}
+.btn-settings:hover svg {
+  transform: rotate(45deg);
+}
+
 .btn-logout { background: transparent; color: var(--text-secondary); padding: 8px 16px; border: 1px solid var(--border-glass); }
 .btn-logout:hover { color: #fff; border-color: #fff; }
 

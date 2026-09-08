@@ -725,9 +725,10 @@ function setupEvents() {
   bind('auth-form',        'submit', handleAuthSubmit);
   bind('btn-logout',       'click',  handleLogout);
 
-  // Nav cards
+  // Nav
   bind('card-products',  'click', () => navigate('products'));
   bind('card-proposals', 'click', () => navigate('proposals'));
+  bind('btn-settings',   'click', () => navigate('settings'));
   bind('card-settings',  'click', () => navigate('settings'));
   bind('card-history',   'click', () => navigate('history'));
 
