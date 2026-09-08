@@ -15,7 +15,7 @@
   <!-- 1. TELA DE LOGIN / CADASTRO (AUTH) -->
   <section id="view-auth" class="glass-container">
     <div class="text-center">
-      <img src="logo.png" alt="AC Display" style="display: block; margin: 0 auto 20px auto; height: 120px; object-fit: contain;">
+      <img src="logo.png" alt="AC Display" style="display: block; margin: 0 auto 24px auto; height: 140px; max-width: 90%; object-fit: contain;">
       <h1 id="auth-title">Fazer Login</h1>
       <p id="auth-subtitle" class="subtitle">Insira suas credenciais para continuar</p>
     </div>
@@ -49,7 +49,7 @@
   <!-- 2. PAINEL PRINCIPAL (DASHBOARD) -->
   <section id="view-dashboard" class="glass-container glass-container-large hidden">
     <header class="app-header">
-      <img src="logo.png" alt="AC Display" style="height: 75px; object-fit: contain;">
+      <img src="logo.png" alt="AC Display" style="height: 95px; object-fit: contain;">
       <div class="user-info">
         <span id="display-user-email" class="user-email"></span>
         <button id="btn-settings" class="btn-settings" title="Fatores de Conversão">
@@ -93,7 +93,10 @@
   <section id="view-products" class="glass-container glass-container-large hidden">
     <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
-      <div class="page-title">Cadastro de Produtos</div>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <img src="logo.png" alt="AC Display" style="height: 80px; object-fit: contain;">
+        <div class="page-title">Cadastro de Produtos</div>
+      </div>
     </div>
 
     <div class="product-layout">
@@ -174,8 +177,8 @@
   <section id="view-proposals" class="glass-container glass-container-large hidden">
     <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="logo.png" alt="AC Display" style="height: 60px; object-fit: contain;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <img src="logo.png" alt="AC Display" style="height: 80px; object-fit: contain;">
         <div class="page-title" id="proposal-form-title">Criar Proposta</div>
       </div>
     </div>
@@ -326,7 +329,10 @@
   <section id="view-settings" class="glass-container glass-container-large hidden">
     <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
-      <div class="page-title">Fatores de Conversão</div>
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <img src="logo.png" alt="AC Display" style="height: 80px; object-fit: contain;">
+        <div class="page-title">Fatores de Conversão</div>
+      </div>
     </div>
     
     <div style="max-width: 600px; margin: 0 auto;">
@@ -400,8 +406,8 @@
   <section id="view-history" class="glass-container glass-container-large hidden">
     <div class="nav-bar">
       <button class="btn-back" onclick="navigate('dashboard')">←</button>
-      <div style="display: flex; align-items: center; gap: 12px;">
-        <img src="logo.png" alt="AC Display" style="height: 60px; object-fit: contain;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <img src="logo.png" alt="AC Display" style="height: 80px; object-fit: contain;">
         <div class="page-title">Histórico de Propostas</div>
       </div>
     </div>
@@ -552,6 +558,6 @@
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="app.js?v=4.5"></script>
+  <script src="app.js?v=4.6"></script>
 </body>
 </html>
