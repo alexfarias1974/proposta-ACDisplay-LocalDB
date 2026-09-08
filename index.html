@@ -464,10 +464,97 @@
         </div>
       </form>
     </div>
+  <!-- MODAL DE VISUALIZAÇÃO DE PROPOSTA -->
+  <div id="modal-view-proposal" class="modal-backdrop hidden">
+    <div class="modal-card modal-card-large">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 20px; border-bottom: 1px solid var(--border-glass); padding-bottom: 16px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <h2 id="view-prop-title" style="color: var(--cyan); margin-bottom: 0;">Proposta Comercial</h2>
+            <span id="view-prop-badge" style="font-size: 0.85rem; font-weight: 700; color: var(--cyan); background: rgba(0,212,255,0.1); padding: 4px 10px; border-radius: 6px; border: 1px solid rgba(0,212,255,0.2);"></span>
+          </div>
+          <p id="view-prop-date" class="subtitle" style="margin-top: 4px; font-size: 0.85rem;"></p>
+        </div>
+        <button type="button" class="modal-close-btn" id="btn-close-view-modal">&times;</button>
+      </div>
+
+      <!-- Detalhes do Cliente -->
+      <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Dados do Cliente
+      </h3>
+      <div class="proposal-detail-grid" style="margin-bottom: 24px;">
+        <div class="proposal-detail-item" style="grid-column: span 2;">
+          <div class="label">Cliente / Empresa</div>
+          <div class="value" id="view-prop-client"></div>
+        </div>
+        <div class="proposal-detail-item">
+          <div class="label">CNPJ</div>
+          <div class="value" id="view-prop-cnpj"></div>
+        </div>
+        <div class="proposal-detail-item">
+          <div class="label">Serviço</div>
+          <div class="value" id="view-prop-service"></div>
+        </div>
+      </div>
+
+      <!-- Itens da Proposta -->
+      <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+        Produtos / Itens da Proposta
+      </h3>
+      <div class="table-container" style="margin-bottom: 24px; max-height: 200px; overflow-y: auto;">
+        <table>
+          <thead>
+            <tr>
+              <th>Produto / Descrição</th>
+              <th style="width: 100px; text-align: center;">Qtd</th>
+            </tr>
+          </thead>
+          <tbody id="view-prop-items-body">
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Condições Comerciais -->
+      <h3 style="color: var(--text-primary); font-size: 1rem; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+        Condições Comerciais Propostas
+      </h3>
+      
+      <!-- Locação -->
+      <div id="view-prop-locacao-section" style="margin-bottom: 20px;">
+        <div style="font-size: 0.85rem; font-weight: 600; color: var(--cyan); margin-bottom: 8px;">Opções de Locação Mensal (Outsourcing)</div>
+        <div class="switches-grid" id="view-prop-locacao-cards" style="grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px;"></div>
+      </div>
+
+      <!-- Venda Direta / Parcelada -->
+      <div id="view-prop-venda-section" style="margin-bottom: 20px;">
+        <div style="font-size: 0.85rem; font-weight: 600; color: var(--magenta); margin-bottom: 8px;">Opções de Aquisição / Venda</div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="proposal-detail-item" style="border-left: 3px solid var(--magenta);">
+            <div class="label" style="color: var(--magenta);">Venda à Vista</div>
+            <div class="value" id="view-prop-venda-vista" style="font-size: 1.1rem; color: #fff;"></div>
+          </div>
+          <div class="proposal-detail-item" style="border-left: 3px solid #ff8c00;">
+            <div class="label" style="color: #ff8c00;">Parcelado em 12x no Cartão</div>
+            <div class="value" id="view-prop-venda-parcelado" style="font-size: 1.1rem; color: #fff;"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display: flex; gap: 12px; margin-top: 28px; border-top: 1px solid var(--border-glass); padding-top: 20px;">
+        <button type="button" class="btn-secondary" id="btn-close-view-modal-footer" style="flex: 1;">Fechar</button>
+        <button type="button" class="btn-primary" id="btn-download-pdf-modal" style="flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Baixar Proposta em PDF
+        </button>
+      </div>
+    </div>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="app.js?v=4.2"></script>
+  <script src="app.js?v=4.3"></script>
 </body>
 </html>

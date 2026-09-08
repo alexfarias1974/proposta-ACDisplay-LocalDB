@@ -553,6 +553,8 @@ async function loadProposals() {
   }
 }
 
+let viewingProposal = null;
+
 function renderProposalsTable(proposals) {
   const tbody = document.getElementById('history-table-body');
   if (!tbody) return;
@@ -560,18 +562,95 @@ function renderProposalsTable(proposals) {
     tbody.innerHTML = '<tr><td colspan="5" class="text-center" style="color:var(--text-secondary);padding:30px">Nenhuma proposta encontrada.</td></tr>';
     return;
   }
-  tbody.innerHTML = proposals.map((p, i) => `
+  tbody.innerHTML = proposals.map((p) => `
     <tr>
       <td>${p.data_emissao}</td>
       <td style="text-align:center;font-weight:700;color:var(--cyan)">Nº ${p.numero}</td>
       <td style="font-weight:600">${p.cliente}</td>
       <td style="font-style:italic;color:var(--text-secondary)">${p.servico}</td>
-      <td style="text-align:center">
-        <button type="button" class="btn-download-pdf" data-index="${i}">PDF</button>
-        <button type="button" class="btn-delete-item" data-index="${i}">Excluir</button>
+      <td style="text-align:center;white-space:nowrap;">
+        <button type="button" class="btn-view-proposal" data-id="${p.id}" title="Visualizar Proposta">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+            <circle cx="12" cy="12" r="3"></circle>
+          </svg>
+        </button>
+        <button type="button" class="btn-download-pdf" data-id="${p.id}">PDF</button>
+        <button type="button" class="btn-delete-item" data-id="${p.id}">Excluir</button>
       </td>
     </tr>
   `).join('');
+}
+
+function openProposalModal(proposal) {
+  if (!proposal) return;
+  viewingProposal = proposal;
+
+  const modal = document.getElementById('modal-view-proposal');
+  if (!modal) return;
+
+  document.getElementById('view-prop-title').textContent = 'Proposta Comercial';
+  document.getElementById('view-prop-badge').textContent = 'Nº ' + proposal.numero;
+  document.getElementById('view-prop-date').textContent = 'Emissão: ' + (proposal.data_emissao || '-');
+
+  // Client info
+  document.getElementById('view-prop-client').textContent = proposal.cliente || '-';
+  document.getElementById('view-prop-cnpj').textContent = proposal.cnpj || '-';
+  document.getElementById('view-prop-service').textContent = proposal.servico || '-';
+
+  // Items
+  const itemsBody = document.getElementById('view-prop-items-body');
+  if (itemsBody) {
+    if (!proposal.itens || proposal.itens.length === 0) {
+      itemsBody.innerHTML = '<tr><td colspan="2" class="text-center" style="color:var(--text-secondary);padding:16px">Nenhum item listado</td></tr>';
+    } else {
+      itemsBody.innerHTML = proposal.itens.map(item => `
+        <tr>
+          <td>${item.nome}</td>
+          <td style="text-align:center;font-weight:700;">${item.qty}</td>
+        </tr>
+      `).join('');
+    }
+  }
+
+  // Commercial options
+  const opcoes = proposal.opcoes_comerciais || {};
+  
+  // Locação
+  const locacaoSection = document.getElementById('view-prop-locacao-section');
+  const locacaoCards = document.getElementById('view-prop-locacao-cards');
+  if (opcoes.locacao && opcoes.locacao.length > 0) {
+    locacaoSection.classList.remove('hidden');
+    locacaoCards.innerHTML = opcoes.locacao.map(t => `
+      <div class="switch-card" style="flex-direction:column;gap:4px;padding:12px;text-align:center;justify-content:center;">
+        <span style="font-size:0.75rem;color:var(--text-secondary);text-transform:uppercase;letter-spacing:0.5px">${t.name}</span>
+        <span style="font-size:1.15rem;font-weight:800;color:var(--cyan)">${t.val}</span>
+        <span style="font-size:0.7rem;color:var(--text-secondary)">/ mês</span>
+      </div>
+    `).join('');
+  } else {
+    locacaoSection.classList.add('hidden');
+  }
+
+  // Venda direta
+  const vendaSection = document.getElementById('view-prop-venda-section');
+  if (opcoes.venda_direta && opcoes.venda_direta.habilitado) {
+    vendaSection.classList.remove('hidden');
+    const valorStr = String(opcoes.venda_direta.valor || '');
+    const valorNum = parseFloat(valorStr.replace(/[R$\s.]/g,'').replace(',','.')) || 0;
+    const parcelaStr = (valorNum / 12).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+    document.getElementById('view-prop-venda-vista').textContent = valorStr;
+    document.getElementById('view-prop-venda-parcelado').textContent = '12x de ' + parcelaStr;
+  } else {
+    vendaSection.classList.add('hidden');
+  }
+
+  modal.classList.remove('hidden');
+}
+
+function closeProposalModal() {
+  const modal = document.getElementById('modal-view-proposal');
+  if (modal) modal.classList.add('hidden');
 }
 
 async function deleteProposal(id) {
@@ -704,7 +783,10 @@ function setupEvents() {
   }
 
   document.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeEditProductModal();
+    if (e.key === 'Escape') {
+      closeEditProductModal();
+      closeProposalModal();
+    }
   });
 
   // Dropzone
@@ -816,14 +898,46 @@ function setupEvents() {
   }
 
   document.getElementById('history-table-body')?.addEventListener('click', (e) => {
-    if (e.target.classList.contains('btn-download-pdf')) {
-      const p = allProposals[parseInt(e.target.dataset.index)];
+    const viewBtn = e.target.closest('.btn-view-proposal');
+    if (viewBtn) {
+      const id = viewBtn.dataset.id;
+      const p = allProposals.find(item => item.id === id);
+      if (p) openProposalModal(p);
+      return;
+    }
+
+    const pdfBtn = e.target.closest('.btn-download-pdf');
+    if (pdfBtn) {
+      const id = pdfBtn.dataset.id;
+      const p = allProposals.find(item => item.id === id);
       if (p) generateProposalPDF(p);
-    } else if (e.target.classList.contains('btn-delete-item')) {
-      const p = allProposals[parseInt(e.target.dataset.index)];
-      if (p && confirm(`Excluir proposta Nº ${p.numero} de "${p.cliente}"?`)) deleteProposal(p.id);
+      return;
+    }
+
+    const delBtn = e.target.closest('.btn-delete-item');
+    if (delBtn) {
+      const id = delBtn.dataset.id;
+      const p = allProposals.find(item => item.id === id);
+      if (p && confirm(`Excluir proposta Nº ${p.numero} de "${p.cliente}"?`)) {
+        deleteProposal(p.id);
+      }
+      return;
     }
   });
+
+  // Modal de visualização de proposta
+  bind('btn-close-view-modal', 'click', closeProposalModal);
+  bind('btn-close-view-modal-footer', 'click', closeProposalModal);
+  bind('btn-download-pdf-modal', 'click', () => {
+    if (viewingProposal) generateProposalPDF(viewingProposal);
+  });
+
+  const viewModal = document.getElementById('modal-view-proposal');
+  if (viewModal) {
+    viewModal.addEventListener('click', (e) => {
+      if (e.target === viewModal) closeProposalModal();
+    });
+  }
 }
 
 // ─── Init ─────────────────────────────────────────────────────────────────────
