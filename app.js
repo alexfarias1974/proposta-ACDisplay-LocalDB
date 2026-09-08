@@ -121,30 +121,117 @@ async function checkSession() {
 // ─── Produtos ─────────────────────────────────────────────────────────────────
 async function loadProducts() {
   const tableBody = document.getElementById('products-table-body');
-  if (tableBody) tableBody.innerHTML = '<tr><td colspan="2" class="text-center"><span class="spinner"></span> Carregando...</td></tr>';
+  if (tableBody) tableBody.innerHTML = '<tr><td colspan="3" class="text-center"><span class="spinner"></span> Carregando...</td></tr>';
   try {
     allProducts = await api('GET', '/produtos');
-    if (tableBody) renderProductsTable(allProducts);
+    renderProductsTable();
   } catch (err) {
     showToast('Erro ao carregar produtos: ' + err.message, 'error');
-    if (tableBody) tableBody.innerHTML = '<tr><td colspan="2" class="text-center">Erro ao carregar produtos.</td></tr>';
+    if (tableBody) tableBody.innerHTML = '<tr><td colspan="3" class="text-center">Erro ao carregar produtos.</td></tr>';
   }
 }
 
-function renderProductsTable(products) {
+function renderProductsTable(products = null) {
   const tableBody = document.getElementById('products-table-body');
   if (!tableBody) return;
-  if (products.length === 0) {
-    tableBody.innerHTML = '<tr><td colspan="2" class="text-center" style="color:var(--text-secondary)">Nenhum produto cadastrado.</td></tr>';
+
+  const searchInput = document.getElementById('prod-search-input');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+
+  const list = products !== null ? products : (
+    query ? allProducts.filter(p => p.nome.toLowerCase().includes(query)) : allProducts
+  );
+
+  const countLabel = document.getElementById('products-count-label');
+  if (countLabel) {
+    if (allProducts.length === 0) {
+      countLabel.textContent = 'Nenhum produto cadastrado no momento.';
+    } else if (query) {
+      countLabel.textContent = `${list.length} de ${allProducts.length} produto(s) encontrado(s) para "${query}"`;
+    } else {
+      countLabel.textContent = `Total de ${allProducts.length} produto(s) cadastrado(s)`;
+    }
+  }
+
+  if (list.length === 0) {
+    const msg = query 
+      ? `Nenhum produto encontrado para "<strong>${query}</strong>".`
+      : 'Nenhum produto cadastrado.';
+    tableBody.innerHTML = `<tr><td colspan="3" class="text-center" style="color:var(--text-secondary);padding:24px">${msg}</td></tr>`;
     return;
   }
-  tableBody.innerHTML = products.map(p => {
+
+  tableBody.innerHTML = list.map(p => {
     const price = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(p.preco);
+    const escapedNome = p.nome.replace(/"/g, '&quot;');
     return `<tr>
-      <td>${p.nome}</td>
-      <td style="text-align:right;font-weight:600;color:var(--cyan)">${price}</td>
+      <td style="font-weight:500;">${p.nome}</td>
+      <td style="text-align:right;font-weight:700;color:var(--cyan);white-space:nowrap;">${price}</td>
+      <td style="text-align:center;white-space:nowrap;">
+        <button type="button" class="btn-edit-item" data-id="${p.id}" data-nome="${escapedNome}" data-preco="${p.preco}">Editar</button>
+        <button type="button" class="btn-delete-item" data-id="${p.id}" data-nome="${escapedNome}">Excluir</button>
+      </td>
     </tr>`;
   }).join('');
+}
+
+function openEditProductModal(id, nome, preco) {
+  const modal = document.getElementById('modal-edit-product');
+  if (!modal) return;
+  document.getElementById('edit-prod-id').value = id;
+  document.getElementById('edit-prod-name').value = nome;
+  document.getElementById('edit-prod-price').value = preco;
+  modal.classList.remove('hidden');
+  setTimeout(() => document.getElementById('edit-prod-name').focus(), 100);
+}
+
+function closeEditProductModal() {
+  const modal = document.getElementById('modal-edit-product');
+  if (modal) modal.classList.add('hidden');
+}
+
+async function handleEditProductSubmit(e) {
+  e.preventDefault();
+  const id    = document.getElementById('edit-prod-id').value;
+  const name  = document.getElementById('edit-prod-name').value.trim();
+  const price = parseFloat(document.getElementById('edit-prod-price').value);
+
+  if (!name) { showToast('Informe o nome do produto.', 'error'); return; }
+  if (isNaN(price) || price < 0) { showToast('Preço inválido.', 'error'); return; }
+
+  const btn = document.getElementById('btn-save-edit-product');
+  const orig = btn.textContent;
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Salvando...';
+
+  try {
+    const updated = await api('PUT', '/produtos/' + id, { nome: name, preco: price });
+    const idx = allProducts.findIndex(p => p.id === id);
+    if (idx !== -1) {
+      allProducts[idx].nome = updated.nome;
+      allProducts[idx].preco = updated.preco;
+    }
+    showToast(`Produto "${name}" atualizado com sucesso!`, 'success');
+    closeEditProductModal();
+    renderProductsTable();
+  } catch (err) {
+    showToast('Erro ao atualizar produto: ' + err.message, 'error');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = orig;
+  }
+}
+
+async function handleDeleteProduct(id, nome) {
+  if (!confirm(`Deseja realmente excluir o produto "${nome}"?`)) return;
+  try {
+    await api('DELETE', '/produtos/' + id);
+    allProducts = allProducts.filter(p => p.id !== id);
+    showToast(`Produto "${nome}" excluído com sucesso!`, 'success');
+    renderProductsTable();
+  } catch (err) {
+    showToast('Erro ao excluir: ' + err.message, 'error');
+  }
 }
 
 async function handleProductSubmit(e) {
@@ -567,7 +654,55 @@ function setupEvents() {
 
   // Products
   bind('product-form',        'submit', handleProductSubmit);
-  bind('btn-refresh-products','click',  loadProducts);
+  bind('btn-refresh-products','click',  () => {
+    const s = document.getElementById('prod-search-input');
+    if (s) s.value = '';
+    loadProducts();
+  });
+
+  // Search/consult products
+  const prodSearch = document.getElementById('prod-search-input');
+  if (prodSearch) {
+    prodSearch.addEventListener('input', () => renderProductsTable());
+  }
+
+  // Edit / Delete buttons in products table
+  const prodTableBody = document.getElementById('products-table-body');
+  if (prodTableBody) {
+    prodTableBody.addEventListener('click', (e) => {
+      const editBtn = e.target.closest('.btn-edit-item');
+      if (editBtn) {
+        const id = editBtn.dataset.id;
+        const nome = editBtn.dataset.nome;
+        const preco = parseFloat(editBtn.dataset.preco) || 0;
+        openEditProductModal(id, nome, preco);
+        return;
+      }
+      const delBtn = e.target.closest('.btn-delete-item');
+      if (delBtn) {
+        const id = delBtn.dataset.id;
+        const nome = delBtn.dataset.nome;
+        handleDeleteProduct(id, nome);
+        return;
+      }
+    });
+  }
+
+  // Edit modal
+  bind('edit-product-form', 'submit', handleEditProductSubmit);
+  bind('btn-close-edit-modal', 'click', closeEditProductModal);
+  bind('btn-cancel-edit-product', 'click', closeEditProductModal);
+
+  const editModal = document.getElementById('modal-edit-product');
+  if (editModal) {
+    editModal.addEventListener('click', (e) => {
+      if (e.target === editModal) closeEditProductModal();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeEditProductModal();
+  });
 
   // Dropzone
   const dz      = document.getElementById('dropzone');

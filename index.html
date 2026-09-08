@@ -142,16 +142,30 @@
     </div>
 
     <div style="margin-top: 40px;">
-      <h2 style="display: flex; align-items: center; justify-content: space-between;">
-        Produtos Cadastrados
-        <button id="btn-refresh-products" class="btn-secondary" style="font-size: 0.85rem;">Atualizar Lista</button>
-      </h2>
-      <div class="table-container">
+      <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; margin-bottom: 16px;">
+        <div>
+          <h2 style="margin-bottom: 4px;">Consultar e Editar Produtos</h2>
+          <p class="subtitle" id="products-count-label">Consulte, altere nomes ou reajuste valores dos produtos cadastrados</p>
+        </div>
+        <button id="btn-refresh-products" class="btn-secondary" style="font-size: 0.85rem; display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          Atualizar Lista
+        </button>
+      </div>
+
+      <div class="form-group" style="margin-bottom: 20px;">
+        <div class="input-wrapper">
+          <input type="text" id="prod-search-input" placeholder="🔍 Consultar produto por nome (ex: Totem, Tela, Pedestal...)" autocomplete="off">
+        </div>
+      </div>
+
+      <div class="table-container" style="max-height: 520px; overflow-y: auto;">
         <table>
           <thead>
             <tr>
               <th>Produto</th>
-              <th style="width: 150px; text-align: right;">Preço</th>
+              <th style="width: 160px; text-align: right;">Preço</th>
+              <th style="width: 180px; text-align: center;">Ações</th>
             </tr>
           </thead>
           <tbody id="products-table-body">
@@ -421,10 +435,37 @@
         </tbody>
       </table>
     </div>
-  </section>
+  <!-- MODAL DE EDIÇÃO DE PRODUTO -->
+  <div id="modal-edit-product" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="color: var(--cyan); margin-bottom: 0;">Editar Produto</h2>
+        <button type="button" class="modal-close-btn" id="btn-close-edit-modal">&times;</button>
+      </div>
+      <form id="edit-product-form" autocomplete="off">
+        <input type="hidden" id="edit-prod-id">
+        <div class="form-group">
+          <label for="edit-prod-name">Nome do Produto</label>
+          <div class="input-wrapper">
+            <input type="text" id="edit-prod-name" placeholder="Ex: Totem Digital 43 Polegadas" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="edit-prod-price">Preço Reajustado (R$)</label>
+          <div class="input-wrapper">
+            <input type="number" id="edit-prod-price" step="0.01" min="0" placeholder="Ex: 4500.00" required>
+          </div>
+        </div>
+        <div style="display: flex; gap: 12px; margin-top: 28px;">
+          <button type="button" class="btn-secondary" id="btn-cancel-edit-product" style="flex: 1;">Cancelar</button>
+          <button type="submit" class="btn-primary" id="btn-save-edit-product" style="flex: 1;">Salvar Alterações</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="app.js?v=4.0"></script>
+  <script src="app.js?v=4.1"></script>
 </body>
 </html>

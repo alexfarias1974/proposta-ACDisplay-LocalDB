@@ -80,6 +80,22 @@ app.delete('/api/produtos', authMiddleware, (req, res) => {
   const db = loadDB(); db.produtos = []; saveDB(db); res.json({ ok: true });
 });
 
+app.put('/api/produtos/:id', authMiddleware, (req, res) => {
+  const db = loadDB();
+  const idx = db.produtos.findIndex(p => p.id === req.params.id);
+  if (idx === -1) return res.status(404).json({ error: 'Produto nao encontrado' });
+  const { nome, preco } = req.body;
+  if (nome !== undefined && String(nome).trim()) {
+    db.produtos[idx].nome = String(nome).trim();
+  }
+  if (preco !== undefined && !isNaN(parseFloat(preco))) {
+    db.produtos[idx].preco = Math.max(0, parseFloat(preco));
+  }
+  db.produtos[idx].updated_at = new Date().toISOString();
+  saveDB(db);
+  res.json(db.produtos[idx]);
+});
+
 app.delete('/api/produtos/:id', authMiddleware, (req, res) => {
   const db = loadDB();
   const idx = db.produtos.findIndex(p => p.id === req.params.id);
