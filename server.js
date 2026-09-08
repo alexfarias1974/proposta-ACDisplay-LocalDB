@@ -24,6 +24,9 @@ function loadDB() {
 function saveDB(db) { fs.writeFileSync(DB_PATH, JSON.stringify(db, null, 2), 'utf8'); }
 function generateId() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 8); }
 
+// Garante que o banco.json exista logo na inicializacao
+loadDB();
+
 app.use(cors());
 app.use(express.json({ limit: '10mb' }));
 app.use(express.static(__dirname));
