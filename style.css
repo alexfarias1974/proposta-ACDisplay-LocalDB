@@ -141,15 +141,29 @@ button {
 .btn-logout:hover { color: #fff; border-color: #fff; }
 
 .btn-back {
-  background: var(--card-color);
+  background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border-glass);
-  color: var(--text-primary);
-  width: 40px; height: 40px;
-  border-radius: 50%;
-  display: flex; justify-content: center; align-items: center;
-  font-size: 1.2rem;
+  color: var(--text-secondary);
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition);
+  flex-shrink: 0;
 }
-.btn-back:hover { background: var(--cyan); color: #fff; border-color: var(--cyan); }
+.btn-back:hover {
+  background: rgba(0, 212, 255, 0.12);
+  color: var(--cyan);
+  border-color: var(--cyan);
+  box-shadow: 0 0 16px rgba(0, 212, 255, 0.25);
+  transform: translateX(-4px);
+}
+.btn-back:active {
+  transform: translateX(-2px) scale(0.96);
+}
 
 .btn-delete-item { background: transparent; color: var(--magenta); border: 1px solid rgba(255,45,120,0.3); padding: 6px 12px; }
 .btn-delete-item:hover { background: rgba(255,45,120,0.1); border-color: var(--magenta); }
