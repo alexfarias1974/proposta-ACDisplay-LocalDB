@@ -901,7 +901,7 @@ function setupEvents() {
     const viewBtn = e.target.closest('.btn-view-proposal');
     if (viewBtn) {
       const id = viewBtn.dataset.id;
-      const p = allProposals.find(item => item.id === id);
+      const p = allProposals.find(item => item.id === id || String(item.numero) === id);
       if (p) openProposalModal(p);
       return;
     }
@@ -909,7 +909,7 @@ function setupEvents() {
     const pdfBtn = e.target.closest('.btn-download-pdf');
     if (pdfBtn) {
       const id = pdfBtn.dataset.id;
-      const p = allProposals.find(item => item.id === id);
+      const p = allProposals.find(item => item.id === id || String(item.numero) === id);
       if (p) generateProposalPDF(p);
       return;
     }
@@ -917,7 +917,7 @@ function setupEvents() {
     const delBtn = e.target.closest('.btn-delete-item');
     if (delBtn) {
       const id = delBtn.dataset.id;
-      const p = allProposals.find(item => item.id === id);
+      const p = allProposals.find(item => item.id === id || String(item.numero) === id);
       if (p && confirm(`Excluir proposta Nº ${p.numero} de "${p.cliente}"?`)) {
         deleteProposal(p.id);
       }
