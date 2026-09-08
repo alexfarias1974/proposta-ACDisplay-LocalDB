@@ -673,16 +673,19 @@ function setupEvents() {
       const editBtn = e.target.closest('.btn-edit-item');
       if (editBtn) {
         const id = editBtn.dataset.id;
-        const nome = editBtn.dataset.nome;
-        const preco = parseFloat(editBtn.dataset.preco) || 0;
-        openEditProductModal(id, nome, preco);
+        const prod = allProducts.find(p => p.id === id);
+        if (prod) {
+          openEditProductModal(prod.id, prod.nome, prod.preco);
+        }
         return;
       }
       const delBtn = e.target.closest('.btn-delete-item');
       if (delBtn) {
         const id = delBtn.dataset.id;
-        const nome = delBtn.dataset.nome;
-        handleDeleteProduct(id, nome);
+        const prod = allProducts.find(p => p.id === id);
+        if (prod) {
+          handleDeleteProduct(prod.id, prod.nome);
+        }
         return;
       }
     });
